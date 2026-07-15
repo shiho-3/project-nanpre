@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Project NANPRE">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<title>Project NANPRE v2.4</title>
+<title>Project NANPRE v2.5</title>
 <style>
 :root{--bg:#fff7fb;--card:#fff;--ink:#342d35;--muted:#786f78;--accent:#e96b9f;--soft:#ffd9e8;--line:#b9b1b9;--thick:#504950;--solved:#2466a8;--gray:#dddde5}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif;background:var(--bg);color:var(--ink)}
@@ -19,8 +19,8 @@ h1{font-size:20px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:3px
 button{padding:10px 12px;font-weight:750;cursor:pointer}button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}button.soft{background:var(--soft);border-color:#efbad0}
 button.danger{background:#fff0f0;color:#a52d2d}button.active{outline:3px solid #f4abc8}select,input{padding:9px}label{font-size:13px;color:var(--muted)}
 .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.tabs button{padding:11px 6px}
-#workWrap{overflow:auto;-webkit-overflow-scrolling:touch;background:#faf8fa;border-radius:12px;padding:8px;min-height:310px}
-#work{position:relative;margin:auto;touch-action:none}.cell{position:absolute;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;user-select:none;-webkit-user-select:none}
+#workWrap{overflow:auto;overflow-x:auto;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-x pan-y;background:#faf8fa;border-radius:12px;padding:8px;min-height:360px;max-height:68vh;position:relative}
+#work{position:relative;margin:0;touch-action:manipulation;min-width:max-content;min-height:max-content}.cell{position:absolute;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;user-select:none;-webkit-user-select:none}
 .cell.photo{background-color:rgba(255,255,255,.48);background-repeat:no-repeat}.cell.selected{box-shadow:inset 0 0 0 3px var(--accent);z-index:15}.cell.gray{background-color:rgba(221,221,229,.82)}
 .cell.solved{color:var(--solved)}.edgeT{border-top:3px solid var(--thick)!important}.edgeB{border-bottom:3px solid var(--thick)!important}.edgeL{border-left:3px solid var(--thick)!important}.edgeR{border-right:3px solid var(--thick)!important}
 .boardHandle{position:absolute;background:rgba(233,107,159,.94);color:#fff;border-radius:10px 10px 0 0;padding:5px 9px;font-size:12px;font-weight:800;z-index:30;touch-action:none;user-select:none}
@@ -34,11 +34,16 @@ button.danger{background:#fff0f0;color:#a52d2d}button.active{outline:3px solid #
 .photoGrid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(to right,rgba(233,107,159,.8) 1px,transparent 1px),linear-gradient(to bottom,rgba(233,107,159,.8) 1px,transparent 1px)}
 #magnifier{margin-top:8px;width:100%;height:95px;border-radius:10px;border:1px solid #ddd;background:#fafafa center/contain no-repeat;display:flex;align-items:center;justify-content:center;color:#777;font-size:12px}
 .rangeRow{display:grid;grid-template-columns:70px 1fr 50px;gap:6px;align-items:center;margin:6px 0}
+#workWrap::-webkit-scrollbar{width:10px;height:10px}
+#workWrap::-webkit-scrollbar-thumb{background:#d8a9bc;border-radius:999px}
+#workWrap::-webkit-scrollbar-track{background:#f7eaf0;border-radius:999px}
+.scrollHint{font-size:12px;color:var(--muted);margin:7px 0 0}
+
 @media(max-width:620px){main{padding:7px}.card{padding:9px;border-radius:13px}.tabs button{font-size:13px}}
 </style>
 </head>
 <body>
-<header><h1>Project NANPRE v2.4</h1><div class="sub">配置モード付きドラッグ連結・12×12・16×16・写真枠修正版</div></header>
+<header><h1>Project NANPRE v2.5</h1><div class="sub">盤面スクロール対応・ドラッグ連結・12×12・16×16</div></header>
 <main>
 <section class="card"><div class="tabs"><button id="tabLinked" class="active">連結9×9</button><button id="tab12">12×12</button><button id="tab16">16×16</button></div></section>
 
@@ -67,6 +72,8 @@ button.danger{background:#fff0f0;color:#a52d2d}button.active{outline:3px solid #
 
 <section class="card">
  <div class="row"><button id="modeNumber" class="active">数字入力</button><button id="modeGray">灰色マス指定</button><button id="clearCell">選択マスを消す</button><button id="clearSolution">解答だけ消す</button></div>
+ <div class="row" style="margin-top:7px"><button id="scrollUp">↑</button><button id="scrollLeft">←</button><button id="scrollCenter">中央</button><button id="scrollRight">→</button><button id="scrollDown">↓</button></div>
+ <div class="scrollHint">盤面は指で上下左右にスクロールできます。はみ出した部分も移動して入力できます。</div>
  <div id="workWrap"><div id="work"></div></div><div id="keypad"></div>
 </section>
 
@@ -93,12 +100,12 @@ function renderAll(){clean();updateLayoutButton();renderBoardList();renderWork()
 function renderBoardList(){const box=$("#boardList");box.innerHTML="";if(S.modeType!=="linked")return;S.boards.forEach((b,i)=>{const r=document.createElement("div");r.className="boardRow";r.innerHTML=`<b>${b.name}</b><span class="small">行 ${b.row}・列 ${b.col}</span><button data-s="${i}">${S.selectedBoard===i?"選択中":"選択"}</button>`;box.appendChild(r)});box.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{S.selectedBoard=+b.dataset.s;renderBoardList();refreshPhotoEditor()})}
 function extents(){const m=membership();let minR=Infinity,minC=Infinity,maxR=-Infinity,maxC=-Infinity;for(const k of m.keys()){const[r,c]=parse(k);minR=Math.min(minR,r);minC=Math.min(minC,c);maxR=Math.max(maxR,r);maxC=Math.max(maxC,c)}return m.size?{minR,minC,maxR,maxC}:{minR:0,minC:0,maxR:8,maxC:8}}
 function photoForCell(mem){for(const x of mem){const id=S.modeType==="linked"?S.boards[x.bi].id:S.modeType;if(S.photos[id])return{p:S.photos[id],lr:x.lr,lc:x.lc,n:cfg().n}}return null}
-function renderWork(){const work=$("#work"),wrap=$("#workWrap");work.innerHTML="";const m=membership(),ex=extents(),C=cfg(),rows=ex.maxR-ex.minR+1,cols=ex.maxC-ex.minC+1,available=wrap.clientWidth-16,cell=Math.max(22,Math.min(S.modeType==="linked"?42:34,Math.floor(available/Math.min(cols,S.modeType==="linked"?12:C.n))));work.style.width=cols*cell+"px";work.style.height=rows*cell+"px";
-for(const[k,mem]of m){const[r,c]=parse(k),el=document.createElement("div");el.className="cell";el.style.left=(c-ex.minC)*cell+"px";el.style.top=(r-ex.minR)*cell+"px";el.style.width=cell+"px";el.style.height=cell+"px";el.style.fontSize=Math.max(11,Math.floor(cell*(C.n>9?.43:.58)))+"px";
+function renderWork(){const work=$("#work"),wrap=$("#workWrap");work.innerHTML="";const m=membership(),ex=extents(),C=cfg(),rows=ex.maxR-ex.minR+1,cols=ex.maxC-ex.minC+1,available=wrap.clientWidth-16,cell=Math.max(22,Math.min(S.modeType==="linked"?42:34,Math.floor(available/Math.min(cols,S.modeType==="linked"?12:C.n))));work.style.width=(cols*cell+40)+"px";work.style.height=(rows*cell+40)+"px";work.style.padding="20px";
+for(const[k,mem]of m){const[r,c]=parse(k),el=document.createElement("div");el.className="cell";el.style.left=(20+(c-ex.minC)*cell)+"px";el.style.top=(20+(r-ex.minR)*cell)+"px";el.style.width=cell+"px";el.style.height=cell+"px";el.style.fontSize=Math.max(11,Math.floor(cell*(C.n>9?.43:.58)))+"px";
 let T=false,B=false,L=false,R=false;mem.forEach(x=>{if(x.lr%C.boxR===0)T=true;if(x.lr%C.boxR===C.boxR-1)B=true;if(x.lc%C.boxC===0)L=true;if(x.lc%C.boxC===C.boxC-1)R=true});if(T)el.classList.add("edgeT");if(B)el.classList.add("edgeB");if(L)el.classList.add("edgeL");if(R)el.classList.add("edgeR");
 const ph=photoForCell(mem);if(ph){el.classList.add("photo");el.style.backgroundImage=`url("${ph.p.data}")`;el.style.backgroundSize=`${ph.n*100}% ${ph.n*100}%`;el.style.backgroundPosition=`${ph.n===1?0:(ph.lc/(ph.n-1))*100}% ${ph.n===1?0:(ph.lr/(ph.n-1))*100}%`}
 if(S.gray[k])el.classList.add("gray");if(S.selectedCell===k)el.classList.add("selected");if(S.values[k]){el.textContent=S.values[k];if(S.solution[k])el.classList.add("solved")}el.onclick=()=>cellTap(k);work.appendChild(el)}
-if(S.modeType==="linked")S.boards.forEach((b,i)=>{const x=(b.col-ex.minC)*cell,y=(b.row-ex.minR)*cell,out=document.createElement("div");out.className="boardOutline";out.style.cssText=`left:${x}px;top:${y}px;width:${9*cell}px;height:${9*cell}px`;work.appendChild(out);const h=document.createElement("div");h.className="boardHandle";h.textContent=`${b.name}${S.layoutMode?"（移動中）":""}`;h.style.left=x+"px";h.style.top=Math.max(0,y-27)+"px";h.dataset.i=i;work.appendChild(h);if(S.layoutMode){const ds=document.createElement("div");ds.className="dragSurface";ds.style.cssText=`left:${x}px;top:${y}px;width:${9*cell}px;height:${9*cell}px`;ds.dataset.i=i;drag(ds,cell);work.appendChild(ds)}})}
+if(S.modeType==="linked")S.boards.forEach((b,i)=>{const x=20+(b.col-ex.minC)*cell,y=20+(b.row-ex.minR)*cell,out=document.createElement("div");out.className="boardOutline";out.style.cssText=`left:${x}px;top:${y}px;width:${9*cell}px;height:${9*cell}px`;work.appendChild(out);const h=document.createElement("div");h.className="boardHandle";h.textContent=`${b.name}${S.layoutMode?"（移動中）":""}`;h.style.left=x+"px";h.style.top=Math.max(0,y-27)+"px";h.dataset.i=i;work.appendChild(h);if(S.layoutMode){const ds=document.createElement("div");ds.className="dragSurface";ds.style.cssText=`left:${x}px;top:${y}px;width:${9*cell}px;height:${9*cell}px`;ds.dataset.i=i;drag(ds,cell);work.appendChild(ds)}})}
 function drag(el,cell){let sx=0,sy=0,sr=0,sc=0,i=0,lastDr=0,lastDc=0;
 el.onpointerdown=e=>{if(!S.layoutMode)return;e.preventDefault();e.stopPropagation();i=+el.dataset.i;S.selectedBoard=i;sx=e.clientX;sy=e.clientY;sr=S.boards[i].row;sc=S.boards[i].col;lastDr=0;lastDc=0;el.setPointerCapture(e.pointerId);renderBoardList()};
 el.onpointermove=e=>{if(!S.layoutMode||!el.hasPointerCapture(e.pointerId))return;e.preventDefault();e.stopPropagation();const dc=Math.round((e.clientX-sx)/cell),dr=Math.round((e.clientY-sy)/cell);if(dc===lastDc&&dr===lastDr)return;lastDc=dc;lastDr=dr;S.boards[i].row=sr+dr;S.boards[i].col=sc+dc;const dx=dc*cell,dy=dr*cell;el.style.transform=`translate(${dx}px,${dy}px)`};
@@ -122,10 +129,17 @@ function refreshPhotoEditor(){const p=S.photos[boardPhotoKey()];if(p){photoEdit.
 function rasterizePhoto(cb){const img=$("#photoImg"),box=$("#photoPreview"),n=cfg().n,w=900,h=900,c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d"),iw=img.naturalWidth,ih=img.naturalHeight,base=Math.max(w/iw,h/ih),sc=base*(photoEdit.zoom/100);x.save();x.translate(w/2+photoEdit.x*w/100,h/2+photoEdit.y*h/100);x.rotate(photoEdit.rot*Math.PI/180);x.drawImage(img,-iw*sc/2,-ih*sc/2,iw*sc,ih*sc);x.restore();cb(c.toDataURL("image/jpeg",.88))}
 function showMagnifier(k){const m=membership().get(k)||[],ph=photoForCell(m),mag=$("#magnifier");if(!ph){mag.style.backgroundImage="";mag.textContent="この盤面には写真が設定されていません";return}mag.textContent="";mag.style.backgroundImage=`url("${ph.p.data}")`;mag.style.backgroundSize=`${ph.n*100}% ${ph.n*100}%`;mag.style.backgroundPosition=`${ph.n===1?0:(ph.lc/(ph.n-1))*100}% ${ph.n===1?0:(ph.lr/(ph.n-1))*100}%`}
 function updateLayoutButton(){const b=$("#layoutMode");if(!b)return;b.textContent=`盤面配置モード：${S.layoutMode?"ON":"OFF"}`;b.classList.toggle("active",S.layoutMode);b.classList.toggle("primary",S.layoutMode)}
+function scrollBoard(dx,dy){const w=$("#workWrap");w.scrollBy({left:dx,top:dy,behavior:"smooth"})}
+function centerBoardScroll(){const w=$("#workWrap");w.scrollTo({left:Math.max(0,(w.scrollWidth-w.clientWidth)/2),top:Math.max(0,(w.scrollHeight-w.clientHeight)/2),behavior:"smooth"})}
 $("#photoInput").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{photoEdit.data=r.result;photoEdit.zoom=100;photoEdit.x=0;photoEdit.y=0;photoEdit.rot=0;$("#photoImg").src=r.result;$("#photoEditor").classList.remove("hidden");$("#photoGrid").style.backgroundSize=`${100/cfg().n}% ${100/cfg().n}%`;updatePhotoTransform()};r.readAsDataURL(f)}
 ["zoom","panX","panY","rot"].forEach(id=>$("#"+id).oninput=e=>{photoEdit[id==="panX"?"x":id==="panY"?"y":id]=+e.target.value;updatePhotoTransform()})
 $("#applyPhoto").onclick=()=>{if(!photoEdit.data){status("先に写真を選んでください。",false);return}rasterizePhoto(data=>{S.photos[boardPhotoKey()]={data,original:photoEdit.data,zoom:photoEdit.zoom,x:photoEdit.x,y:photoEdit.y,rot:photoEdit.rot};renderAll();saveAuto();status("写真を選択盤面に重ねました。マスを押して数字を入力してください。",true)})}
 $("#removePhoto").onclick=()=>{delete S.photos[boardPhotoKey()];photoEdit.data=null;$("#photoEditor").classList.add("hidden");renderAll();saveAuto();status("写真を外しました。")}
+$("#scrollUp").onclick=()=>scrollBoard(0,-220);
+$("#scrollDown").onclick=()=>scrollBoard(0,220);
+$("#scrollLeft").onclick=()=>scrollBoard(-220,0);
+$("#scrollRight").onclick=()=>scrollBoard(220,0);
+$("#scrollCenter").onclick=centerBoardScroll;
 $("#tabLinked").onclick=()=>setMode("linked");$("#tab12").onclick=()=>setMode("12");$("#tab16").onclick=()=>setMode("16");
 $("#layoutMode").onclick=()=>{S.layoutMode=!S.layoutMode;document.body.classList.toggle("layoutMode",S.layoutMode);updateLayoutButton();S.selectedCell=null;renderAll();status(S.layoutMode?"盤面配置モードをONにしました。盤面の中を指で動かしてください。":"盤面配置モードをOFFにしました。数字入力できます。",true)}
 $("#addBoard").onclick=()=>{S.boards.push({id:S.nextBoardId,name:`盤面${S.nextBoardId}`,row:0,col:0});S.selectedBoard=S.boards.length-1;S.nextBoardId++;normalize();renderAll();saveAuto()}
