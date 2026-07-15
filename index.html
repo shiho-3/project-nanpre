@@ -5,186 +5,132 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ef6fa7">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Project NANPRE">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<title>Project NANPRE</title>
+<title>Project NANPRE v2.2</title>
 <style>
-:root{
-  --bg:#fff7fb; --card:#fff; --ink:#332b34; --muted:#776d76;
-  --accent:#ef6fa7; --accent2:#ffd8e8; --line:#b9afb9; --thick:#4f4650;
-  --given:#2f2933; --solved:#2664aa; --gray:#dedee6; --bad:#ffe0e0;
-}
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif;background:var(--bg);color:var(--ink)}
-header{position:sticky;top:0;z-index:20;background:rgba(255,247,251,.96);backdrop-filter:blur(10px);padding:12px 14px;border-bottom:1px solid #eadde4}
-h1{font-size:20px;margin:0 0 3px}
-.sub{font-size:12px;color:var(--muted)}
-main{max-width:1100px;margin:auto;padding:10px}
-.card{background:var(--card);border-radius:16px;padding:12px;margin-bottom:10px;box-shadow:0 2px 12px rgba(50,30,45,.07)}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-button,select,input{font:inherit;border:1px solid #d5c8d0;border-radius:10px;background:#fff;color:var(--ink)}
-button{padding:10px 12px;font-weight:750;cursor:pointer}
-button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-button.soft{background:var(--accent2);border-color:#f3b8cf}
-button.danger{background:#fff0f0;color:#a62929}
-button.active{outline:3px solid #f5abc8}
-select,input{padding:9px}
-label{font-size:13px;color:var(--muted)}
-#boardWrap{overflow:auto;-webkit-overflow-scrolling:touch;padding:8px;background:#faf8fa;border-radius:12px;min-height:300px}
-#board{position:relative;margin:auto;touch-action:manipulation}
-.cell{position:absolute;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;user-select:none;-webkit-user-select:none}
-.cell.given{color:var(--given)}
-.cell.solved{color:var(--solved)}
-.cell.gray{background:var(--gray)}
-.cell.selected{box-shadow:inset 0 0 0 3px var(--accent);z-index:5}
-.edgeT{border-top:3px solid var(--thick)!important}.edgeB{border-bottom:3px solid var(--thick)!important}.edgeL{border-left:3px solid var(--thick)!important}.edgeR{border-right:3px solid var(--thick)!important}
-#keypad{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:10px}
-#keypad button{font-size:18px;padding:11px 4px}
-.status{padding:10px;border-radius:10px;background:#f6f3f5;font-size:14px;white-space:pre-wrap}
-.status.ok{background:#e9f8ee;color:#176536}.status.err{background:#fff0f0;color:#922}
-.boardItem{display:grid;grid-template-columns:1fr 78px 78px auto;gap:6px;align-items:end;padding:8px 0;border-bottom:1px solid #eee}
-.small{font-size:12px;color:var(--muted)}
-details summary{font-weight:800;cursor:pointer}
-.pill{display:inline-block;padding:5px 8px;border-radius:999px;background:#f2edf0;font-size:12px}
-#grayAnswer{font-size:20px;font-weight:900;margin-top:5px}
-.install{display:none;background:#fff1f6;border:1px solid #f4bfd3}
-@media(max-width:620px){
- main{padding:8px}.card{border-radius:13px;padding:10px}
- .boardItem{grid-template-columns:1fr 68px 68px}.boardItem button{grid-column:1/-1}
-}
+:root{--bg:#fff7fb;--card:#fff;--ink:#342d35;--muted:#786f78;--accent:#e96b9f;--soft:#ffd9e8;--line:#b9b1b9;--thick:#504950;--solved:#2466a8;--gray:#dddde5}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif;background:var(--bg);color:var(--ink)}
+header{position:sticky;top:0;z-index:40;background:rgba(255,247,251,.97);backdrop-filter:blur(8px);padding:12px 14px;border-bottom:1px solid #eadde4}
+h1{font-size:20px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:3px}main{max-width:1100px;margin:auto;padding:9px}
+.card{background:var(--card);border-radius:16px;padding:11px;margin-bottom:10px;box-shadow:0 2px 12px rgba(50,30,45,.07)}
+.row{display:flex;gap:7px;flex-wrap:wrap;align-items:center}button,select,input{font:inherit;border:1px solid #d7cbd2;border-radius:11px;background:#fff;color:var(--ink)}
+button{padding:10px 12px;font-weight:750;cursor:pointer}button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}button.soft{background:var(--soft);border-color:#efbad0}
+button.danger{background:#fff0f0;color:#a52d2d}button.active{outline:3px solid #f4abc8}select,input{padding:9px}label{font-size:13px;color:var(--muted)}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.tabs button{padding:11px 6px}
+#workWrap{overflow:auto;-webkit-overflow-scrolling:touch;background:#faf8fa;border-radius:12px;padding:8px;min-height:310px}
+#work{position:relative;margin:auto;touch-action:none}.cell{position:absolute;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;user-select:none;-webkit-user-select:none}
+.cell.photo{background-color:rgba(255,255,255,.48);background-repeat:no-repeat}.cell.selected{box-shadow:inset 0 0 0 3px var(--accent);z-index:15}.cell.gray{background-color:rgba(221,221,229,.82)}
+.cell.solved{color:var(--solved)}.edgeT{border-top:3px solid var(--thick)!important}.edgeB{border-bottom:3px solid var(--thick)!important}.edgeL{border-left:3px solid var(--thick)!important}.edgeR{border-right:3px solid var(--thick)!important}
+.boardHandle{position:absolute;background:rgba(233,107,159,.94);color:#fff;border-radius:10px 10px 0 0;padding:5px 9px;font-size:12px;font-weight:800;z-index:30;touch-action:none;user-select:none}
+.boardOutline{position:absolute;border:2px dashed rgba(233,107,159,.7);pointer-events:none;z-index:8}
+#keypad{display:grid;grid-template-columns:repeat(auto-fit,minmax(48px,1fr));gap:6px;margin-top:9px}#keypad button{font-size:17px;padding:10px 4px}
+.status{padding:10px;border-radius:10px;background:#f5f2f4;font-size:14px;white-space:pre-wrap}.status.ok{background:#eaf8ee;color:#176335}.status.err{background:#fff0f0;color:#922}
+.pill{display:inline-block;padding:5px 8px;border-radius:999px;background:#f1edf0;font-size:12px}.answer{font-size:20px;font-weight:900;margin-top:4px}.small{font-size:12px;color:var(--muted)}
+.boardList{display:grid;gap:7px;margin-top:8px}.boardRow{display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:center;border-bottom:1px solid #eee;padding-bottom:7px}.hidden{display:none!important}
+#photoPanel{border:1px solid #f1bfd1;background:#fff8fb}.photoPreview{position:relative;width:min(100%,520px);margin:8px auto;background:#eee;overflow:hidden;border-radius:12px;touch-action:none}
+.photoPreview img{display:block;width:100%;transform-origin:center center;user-select:none;-webkit-user-drag:none}.photoGrid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(to right,rgba(233,107,159,.8) 1px,transparent 1px),linear-gradient(to bottom,rgba(233,107,159,.8) 1px,transparent 1px)}
+#magnifier{margin-top:8px;width:100%;height:95px;border-radius:10px;border:1px solid #ddd;background:#fafafa center/contain no-repeat;display:flex;align-items:center;justify-content:center;color:#777;font-size:12px}
+.rangeRow{display:grid;grid-template-columns:70px 1fr 50px;gap:6px;align-items:center;margin:6px 0}
+@media(max-width:620px){main{padding:7px}.card{padding:9px;border-radius:13px}.tabs button{font-size:13px}}
 </style>
 </head>
 <body>
-<header>
-  <h1>Project NANPRE</h1>
-  <div class="sub">4連・7連・12連・変則配置に対応する、しほ専用ナンプレソルバー</div>
-</header>
+<header><h1>Project NANPRE v2.2</h1><div class="sub">ドラッグ連結・12×12・16×16・写真を見ながら半自動入力</div></header>
 <main>
-<section id="installCard" class="card install">
-  <b>ホーム画面に追加できます</b>
-  <div class="small" style="margin:4px 0 8px">Safariの共有ボタン →「ホーム画面に追加」でアプリ風に使えます。</div>
-  <button id="installBtn" class="primary">インストール</button>
+<section class="card"><div class="tabs"><button id="tabLinked" class="active">連結9×9</button><button id="tab12">12×12</button><button id="tab16">16×16</button></div></section>
+
+<section class="card" id="linkedTools">
+ <div class="row"><button id="addBoard" class="soft">＋ 9×9盤面</button><button id="deleteBoard">選択盤面を削除</button><button id="centerBoards">中央に寄せる</button></div>
+ <div class="small" style="margin-top:7px">ピンクの見出しを指で動かします。マス単位で吸着し、重なったマスは共有されます。</div><div class="boardList" id="boardList"></div>
+</section>
+
+<section class="card" id="photoPanel">
+ <b>📷 写真から半自動入力</b>
+ <div class="small" style="margin:5px 0 8px">写真を選び、盤面がグリッドに合うように拡大・移動します。「盤面に重ねる」で、写真を透かして数字を入力できます。</div>
+ <div class="row">
+   <label class="soft" style="padding:10px 12px;border-radius:11px;cursor:pointer">写真を選ぶ<input id="photoInput" type="file" accept="image/*" capture="environment" hidden></label>
+   <button id="applyPhoto">選択盤面に重ねる</button>
+   <button id="removePhoto">写真を外す</button>
+ </div>
+ <div id="photoEditor" class="hidden">
+   <div class="photoPreview" id="photoPreview"><img id="photoImg" alt=""><div class="photoGrid" id="photoGrid"></div></div>
+   <div class="rangeRow"><span>拡大</span><input id="zoom" type="range" min="100" max="350" value="100"><output id="zoomOut">100%</output></div>
+   <div class="rangeRow"><span>左右</span><input id="panX" type="range" min="-100" max="100" value="0"><output id="panXOut">0</output></div>
+   <div class="rangeRow"><span>上下</span><input id="panY" type="range" min="-100" max="100" value="0"><output id="panYOut">0</output></div>
+   <div class="rangeRow"><span>回転</span><input id="rot" type="range" min="-15" max="15" step="0.5" value="0"><output id="rotOut">0°</output></div>
+ </div>
+ <div id="magnifier">マスを選ぶと、その部分を大きく表示します</div>
 </section>
 
 <section class="card">
-  <div class="row">
-    <label>テンプレート
-      <select id="template">
-        <option value="single">通常9×9</option>
-        <option value="cross4">4連・十字型</option>
-        <option value="chain4">4連・横連結</option>
-        <option value="chain7">7連・横連結</option>
-        <option value="chain12">12連・横連結</option>
-        <option value="blank">空のカスタム</option>
-      </select>
-    </label>
-    <button class="soft" id="applyTemplate">適用</button>
-    <button id="saveLocal">途中保存</button>
-    <button id="loadLocal">保存を読込</button>
-  </div>
+ <div class="row"><button id="modeNumber" class="active">数字入力</button><button id="modeGray">灰色マス指定</button><button id="clearCell">選択マスを消す</button><button id="clearSolution">解答だけ消す</button></div>
+ <div id="workWrap"><div id="work"></div></div><div id="keypad"></div>
 </section>
 
 <section class="card">
-  <details>
-    <summary>盤面の形を調整</summary>
-    <div class="small" style="margin:8px 0">各9×9盤面の左上位置を指定します。重なったマスは自動共有されます。行・列は0から。</div>
-    <div id="boardsList"></div>
-    <div class="row" style="margin-top:8px">
-      <button id="addBoard">＋ 盤面を追加</button>
-      <button id="rebuild">配置を反映</button>
-    </div>
-  </details>
-</section>
-
-<section class="card">
-  <div class="row">
-    <button id="modeNumber" class="active">数字入力</button>
-    <button id="modeGray">灰色マス指定</button>
-    <button id="clearCell">選択マスを消す</button>
-    <button id="clearSolution">解答だけ消す</button>
-  </div>
-  <div id="boardWrap"><div id="board"></div></div>
-  <div id="keypad">
-    <button data-n="1">1</button><button data-n="2">2</button><button data-n="3">3</button><button data-n="4">4</button><button data-n="5">5</button>
-    <button data-n="6">6</button><button data-n="7">7</button><button data-n="8">8</button><button data-n="9">9</button><button data-n="0">消す</button>
-  </div>
-</section>
-
-<section class="card">
-  <div class="row">
-    <button class="primary" id="solve">解く</button>
-    <button id="check">入力チェック</button>
-    <button class="danger" id="resetAll">全部リセット</button>
-  </div>
-  <div id="status" class="status" style="margin-top:10px">盤面を選び、印刷されている数字を入力してください。</div>
-  <div style="margin-top:10px">
-    <span class="pill">灰色マスの答え</span>
-    <div id="grayAnswer">—</div>
-  </div>
+ <div class="row"><button class="primary" id="solve">解く</button><button id="check">入力チェック</button><button id="save">途中保存</button><button id="load">保存を読込</button><button class="danger" id="reset">リセット</button></div>
+ <div id="status" class="status" style="margin-top:9px">モードを選んで数字を入力してください。</div>
+ <div style="margin-top:9px"><span class="pill">灰色マスの答え</span><div class="answer" id="grayAnswer">—</div></div>
 </section>
 </main>
 
 <script>
 "use strict";
-const state={boards:[],values:{},givens:{},gray:{},selected:null,mode:"number",solutionKeys:{}};
-const $=s=>document.querySelector(s),keyOf=(r,c)=>`${r},${c}`,parseKey=k=>k.split(",").map(Number);
-function templateBoards(name){const a=[],add=(n,r,c)=>a.push({name:n,row:r,col:c});
-if(name==="single")add("盤面1",0,0);
-if(name==="cross4"){add("上",0,6);add("左",6,0);add("右",6,12);add("下",12,6);}
-if(name==="chain4")for(let i=0;i<4;i++)add(`盤面${i+1}`,0,i*6);
-if(name==="chain7")for(let i=0;i<7;i++)add(`盤面${i+1}`,0,i*6);
-if(name==="chain12")for(let i=0;i<12;i++)add(`盤面${i+1}`,0,i*6);
-return a}
-function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-function renderBoardsList(){const box=$("#boardsList");box.innerHTML="";
-state.boards.forEach((b,i)=>{const d=document.createElement("div");d.className="boardItem";d.innerHTML=`<label>名前<input value="${esc(b.name)}" data-i="${i}" data-f="name"></label><label>行<input type="number" min="0" value="${b.row}" data-i="${i}" data-f="row"></label><label>列<input type="number" min="0" value="${b.col}" data-i="${i}" data-f="col"></label><button class="danger" data-remove="${i}">削除</button>`;box.appendChild(d)});
-box.querySelectorAll("input").forEach(x=>x.onchange=e=>{const i=+e.target.dataset.i,f=e.target.dataset.f;state.boards[i][f]=f==="name"?e.target.value:Math.max(0,+e.target.value||0)});
-box.querySelectorAll("[data-remove]").forEach(x=>x.onclick=e=>{state.boards.splice(+e.target.dataset.remove,1);renderBoardsList();rebuildBoard()})}
-function membership(){const m=new Map();state.boards.forEach((b,bi)=>{for(let r=0;r<9;r++)for(let c=0;c<9;c++){const k=keyOf(b.row+r,b.col+c);if(!m.has(k))m.set(k,[]);m.get(k).push({bi,lr:r,lc:c})}});return m}
-function clean(){const m=membership();[state.values,state.givens,state.gray,state.solutionKeys].forEach(o=>Object.keys(o).forEach(k=>{if(!m.has(k))delete o[k]}));if(state.selected&&!m.has(state.selected))state.selected=null}
-function rebuildBoard(){clean();const map=membership(),board=$("#board");board.innerHTML="";if(!map.size){board.style.width="300px";board.style.height="240px";board.innerHTML="<div style='padding:30px;text-align:center;color:#777'>盤面を追加してください</div>";return}
-let maxR=0,maxC=0;for(const k of map.keys()){const [r,c]=parseKey(k);maxR=Math.max(maxR,r);maxC=Math.max(maxC,c)}
-const wrapW=$("#boardWrap").clientWidth-16,cols=maxC+1,rows=maxR+1,cell=Math.max(24,Math.min(46,Math.floor(wrapW/Math.min(cols,12))));
-board.style.width=cols*cell+"px";board.style.height=rows*cell+"px";
-for(const [k,mem] of map.entries()){const [r,c]=parseKey(k),el=document.createElement("div");el.className="cell";el.style.left=c*cell+"px";el.style.top=r*cell+"px";el.style.width=cell+"px";el.style.height=cell+"px";el.style.fontSize=Math.max(15,Math.floor(cell*.58))+"px";
-let T=false,B=false,L=false,R=false;mem.forEach(x=>{if(x.lr%3===0)T=true;if(x.lr%3===2)B=true;if(x.lc%3===0)L=true;if(x.lc%3===2)R=true});
-if(T)el.classList.add("edgeT");if(B)el.classList.add("edgeB");if(L)el.classList.add("edgeL");if(R)el.classList.add("edgeR");
-if(state.gray[k])el.classList.add("gray");if(state.selected===k)el.classList.add("selected");if(state.values[k]){el.textContent=state.values[k];el.classList.add(state.solutionKeys[k]?"solved":"given")}
-el.onclick=()=>selectCell(k);board.appendChild(el)}refreshGrayAnswer()}
-function selectCell(k){if(state.mode==="gray"){state.gray[k]=!state.gray[k];if(!state.gray[k])delete state.gray[k];rebuildBoard();return}state.selected=k;rebuildBoard()}
-function enterNumber(n){if(!state.selected)return;if(n===0){delete state.values[state.selected];delete state.givens[state.selected];delete state.solutionKeys[state.selected]}else{state.values[state.selected]=n;state.givens[state.selected]=n;delete state.solutionKeys[state.selected]}rebuildBoard()}
-function constraints(){const map=membership(),units=[];state.boards.forEach(b=>{for(let r=0;r<9;r++)units.push([...Array(9)].map((_,c)=>keyOf(b.row+r,b.col+c)));for(let c=0;c<9;c++)units.push([...Array(9)].map((_,r)=>keyOf(b.row+r,b.col+c)));for(let br=0;br<3;br++)for(let bc=0;bc<3;bc++){const u=[];for(let r=0;r<3;r++)for(let c=0;c<3;c++)u.push(keyOf(b.row+br*3+r,b.col+bc*3+c));units.push(u)}});
-const peers={};for(const k of map.keys())peers[k]=new Set();units.forEach(u=>u.forEach(k=>u.forEach(j=>{if(j!==k)peers[k].add(j)})));return{map,units,peers}}
-function validate(values=state.givens){const{units}=constraints();for(const u of units){const seen={};for(const k of u){const v=values[k];if(v){if(seen[v])return{ok:false,msg:`同じ行・列・3×3内に「${v}」が重複しています。`};seen[v]=true}}}return{ok:true,msg:"入力矛盾は見つかりませんでした。"}}
-function solvePuzzle(){const valid=validate();if(!valid.ok){status(valid.msg,false);return}const{map,peers}=constraints();if(!map.size){status("盤面がありません。",false);return}
-const vals={};for(const k of map.keys())vals[k]=state.givens[k]||0;const keys=[...map.keys()],cands=k=>{const used=new Set();peers[k].forEach(p=>{if(vals[p])used.add(vals[p])});const a=[];for(let n=1;n<=9;n++)if(!used.has(n))a.push(n);return a};let steps=0;
-function dfs(){steps++;let best=null,bc=null;for(const k of keys)if(!vals[k]){const c=cands(k);if(!c.length)return false;if(!best||c.length<bc.length){best=k;bc=c;if(c.length===1)break}}if(!best)return true;for(const n of bc){vals[best]=n;if(dfs())return true;vals[best]=0}return false}
-if(!dfs()){status("解が見つかりません。数字か盤面配置を確認してください。",false);return}
-state.values={...vals};state.solutionKeys={};for(const k of keys)if(!state.givens[k])state.solutionKeys[k]=true;rebuildBoard();status(`解けました！ 探索回数: ${steps.toLocaleString()}`,true)}
-function refreshGrayAnswer(){const ks=Object.keys(state.gray).sort((a,b)=>{const A=parseKey(a),B=parseKey(b);return A[0]-B[0]||A[1]-B[1]});if(!ks.length){$("#grayAnswer").textContent="—";return}const nums=ks.map(k=>state.values[k]||"□"),complete=nums.every(x=>typeof x==="number");$("#grayAnswer").textContent=nums.join(" + ")+(complete?` = ${nums.reduce((a,b)=>a+b,0)}`:"")}
+const $=s=>document.querySelector(s),key=(r,c)=>`${r},${c}`,parse=k=>k.split(",").map(Number);
+const S={modeType:"linked",inputMode:"number",selectedCell:null,selectedBoard:0,boards:[{id:1,name:"盤面1",row:0,col:0}],values:{},givens:{},gray:{},solution:{},nextBoardId:2,photos:{}};
+const configs={"12":{n:12,boxR:3,boxC:4},"16":{n:16,boxR:4,boxC:4}};
+const photoEdit={data:null,zoom:100,x:0,y:0,rot:0};
+function cfg(){return S.modeType==="linked"?{n:9,boxR:3,boxC:3}:configs[S.modeType]}
+function symbols(n){return Array.from({length:n},(_,i)=>String(i+1))}
+function boardPhotoKey(){return S.modeType==="linked"?(S.boards[S.selectedBoard]?.id??1):S.modeType}
+function setMode(t){S.modeType=t;S.selectedCell=null;S.values={};S.givens={};S.gray={};S.solution={};["Linked","12","16"].forEach(x=>$("#tab"+x).classList.toggle("active",String(t)===(x==="Linked"?"linked":x)));$("#linkedTools").classList.toggle("hidden",t!=="linked");if(t!=="linked")S.boards=[{id:1,name:`${t}×${t}`,row:0,col:0}];else if(!S.boards.length)S.boards=[{id:S.nextBoardId++,name:"盤面1",row:0,col:0}];renderAll()}
+function membership(){const m=new Map();if(S.modeType==="linked"){S.boards.forEach((b,bi)=>{for(let r=0;r<9;r++)for(let c=0;c<9;c++){const k=key(b.row+r,b.col+c);if(!m.has(k))m.set(k,[]);m.get(k).push({bi,lr:r,lc:c})}})}else{const n=cfg().n;for(let r=0;r<n;r++)for(let c=0;c<n;c++)m.set(key(r,c),[{bi:0,lr:r,lc:c}])}return m}
+function clean(){const m=membership();[S.values,S.givens,S.gray,S.solution].forEach(o=>Object.keys(o).forEach(k=>{if(!m.has(k))delete o[k]}));if(S.selectedCell&&!m.has(S.selectedCell))S.selectedCell=null}
+function renderAll(){clean();renderBoardList();renderWork();renderKeypad();grayAnswer();refreshPhotoEditor()}
+function renderBoardList(){const box=$("#boardList");box.innerHTML="";if(S.modeType!=="linked")return;S.boards.forEach((b,i)=>{const r=document.createElement("div");r.className="boardRow";r.innerHTML=`<b>${b.name}</b><span class="small">行 ${b.row}・列 ${b.col}</span><button data-s="${i}">${S.selectedBoard===i?"選択中":"選択"}</button>`;box.appendChild(r)});box.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{S.selectedBoard=+b.dataset.s;renderBoardList();refreshPhotoEditor()})}
+function extents(){const m=membership();let minR=Infinity,minC=Infinity,maxR=-Infinity,maxC=-Infinity;for(const k of m.keys()){const[r,c]=parse(k);minR=Math.min(minR,r);minC=Math.min(minC,c);maxR=Math.max(maxR,r);maxC=Math.max(maxC,c)}return m.size?{minR,minC,maxR,maxC}:{minR:0,minC:0,maxR:8,maxC:8}}
+function photoForCell(mem){for(const x of mem){const id=S.modeType==="linked"?S.boards[x.bi].id:S.modeType;if(S.photos[id])return{p:S.photos[id],lr:x.lr,lc:x.lc,n:cfg().n}}return null}
+function renderWork(){const work=$("#work"),wrap=$("#workWrap");work.innerHTML="";const m=membership(),ex=extents(),C=cfg(),rows=ex.maxR-ex.minR+1,cols=ex.maxC-ex.minC+1,available=wrap.clientWidth-16,cell=Math.max(22,Math.min(S.modeType==="linked"?42:34,Math.floor(available/Math.min(cols,S.modeType==="linked"?12:C.n))));work.style.width=cols*cell+"px";work.style.height=rows*cell+"px";
+for(const[k,mem]of m){const[r,c]=parse(k),el=document.createElement("div");el.className="cell";el.style.left=(c-ex.minC)*cell+"px";el.style.top=(r-ex.minR)*cell+"px";el.style.width=cell+"px";el.style.height=cell+"px";el.style.fontSize=Math.max(11,Math.floor(cell*(C.n>9?.43:.58)))+"px";
+let T=false,B=false,L=false,R=false;mem.forEach(x=>{if(x.lr%C.boxR===0)T=true;if(x.lr%C.boxR===C.boxR-1)B=true;if(x.lc%C.boxC===0)L=true;if(x.lc%C.boxC===C.boxC-1)R=true});if(T)el.classList.add("edgeT");if(B)el.classList.add("edgeB");if(L)el.classList.add("edgeL");if(R)el.classList.add("edgeR");
+const ph=photoForCell(mem);if(ph){el.classList.add("photo");el.style.backgroundImage=`url("${ph.p.data}")`;el.style.backgroundSize=`${ph.n*100}% ${ph.n*100}%`;el.style.backgroundPosition=`${ph.n===1?0:(ph.lc/(ph.n-1))*100}% ${ph.n===1?0:(ph.lr/(ph.n-1))*100}%`}
+if(S.gray[k])el.classList.add("gray");if(S.selectedCell===k)el.classList.add("selected");if(S.values[k]){el.textContent=S.values[k];if(S.solution[k])el.classList.add("solved")}el.onclick=()=>cellTap(k);work.appendChild(el)}
+if(S.modeType==="linked")S.boards.forEach((b,i)=>{const x=(b.col-ex.minC)*cell,y=(b.row-ex.minR)*cell,out=document.createElement("div");out.className="boardOutline";out.style.cssText=`left:${x}px;top:${y}px;width:${9*cell}px;height:${9*cell}px`;work.appendChild(out);const h=document.createElement("div");h.className="boardHandle";h.textContent=`${b.name} ✥`;h.style.left=x+"px";h.style.top=Math.max(0,y-27)+"px";h.dataset.i=i;drag(h,cell);work.appendChild(h)})}
+function drag(el,cell){let sx=0,sy=0,sr=0,sc=0;el.onpointerdown=e=>{const i=+el.dataset.i;S.selectedBoard=i;sx=e.clientX;sy=e.clientY;sr=S.boards[i].row;sc=S.boards[i].col;el.setPointerCapture(e.pointerId);renderBoardList()};el.onpointermove=e=>{if(!el.hasPointerCapture(e.pointerId))return;const i=+el.dataset.i;S.boards[i].row=sr+Math.round((e.clientY-sy)/cell);S.boards[i].col=sc+Math.round((e.clientX-sx)/cell);renderWork()};el.onpointerup=e=>{try{el.releasePointerCapture(e.pointerId)}catch{}normalize();renderAll();saveAuto()}}
+function normalize(){if(!S.boards.length)return;const mr=Math.min(...S.boards.map(b=>b.row)),mc=Math.min(...S.boards.map(b=>b.col));S.boards.forEach(b=>{b.row-=mr;b.col-=mc})}
+function cellTap(k){if(S.inputMode==="gray"){S.gray[k]=!S.gray[k];if(!S.gray[k])delete S.gray[k];renderAll();return}S.selectedCell=k;renderWork();showMagnifier(k)}
+function renderKeypad(){const kp=$("#keypad");kp.innerHTML="";symbols(cfg().n).forEach(s=>{const b=document.createElement("button");b.textContent=s;b.onclick=()=>enter(s);kp.appendChild(b)});const d=document.createElement("button");d.textContent="消す";d.onclick=()=>enter(null);kp.appendChild(d)}
+function enter(v){if(!S.selectedCell)return;if(v===null){delete S.values[S.selectedCell];delete S.givens[S.selectedCell];delete S.solution[S.selectedCell]}else{S.values[S.selectedCell]=v;S.givens[S.selectedCell]=v;delete S.solution[S.selectedCell]}renderWork();grayAnswer();saveAuto()}
+function addUnits(or,oc,n,br,bc,u){for(let r=0;r<n;r++)u.push(Array.from({length:n},(_,c)=>key(or+r,oc+c)));for(let c=0;c<n;c++)u.push(Array.from({length:n},(_,r)=>key(or+r,oc+c)));for(let r0=0;r0<n;r0+=br)for(let c0=0;c0<n;c0+=bc){const a=[];for(let r=0;r<br;r++)for(let c=0;c<bc;c++)a.push(key(or+r0+r,oc+c0+c));u.push(a)}}
+function unitsPeers(){const C=cfg(),u=[],m=membership();if(S.modeType==="linked")S.boards.forEach(b=>addUnits(b.row,b.col,9,3,3,u));else addUnits(0,0,C.n,C.boxR,C.boxC,u);const p={};for(const k of m.keys())p[k]=new Set();u.forEach(a=>a.forEach(k=>a.forEach(j=>{if(k!==j&&p[k])p[k].add(j)})));return{m,u,p}}
+function validate(vals=S.givens){const{u}=unitsPeers();for(const a of u){const seen=new Set();for(const k of a){const v=vals[k];if(v){if(seen.has(v))return{ok:false,msg:`「${v}」が行・列・ブロック内で重複しています。`};seen.add(v)}}}return{ok:true,msg:"入力矛盾は見つかりませんでした。"}}
+function solvePuzzle(){const v=validate();if(!v.ok){status(v.msg,false);return}const{m,p}=unitsPeers(),vals={},ks=[...m.keys()],sy=symbols(cfg().n);for(const k of ks)vals[k]=S.givens[k]||null;const cand=k=>{const used=new Set();p[k].forEach(q=>{if(vals[q])used.add(vals[q])});return sy.filter(x=>!used.has(x))};let steps=0;function dfs(){if(++steps>2500000)throw Error("探索量が多すぎます。入力数字を増やしてください。");let best=null,bc=null;for(const k of ks)if(!vals[k]){const c=cand(k);if(!c.length)return false;if(!best||c.length<bc.length){best=k;bc=c;if(c.length===1)break}}if(!best)return true;for(const x of bc){vals[best]=x;if(dfs())return true;vals[best]=null}return false}
+try{if(!dfs()){status("解が見つかりません。入力や配置を確認してください。",false);return}}catch(e){status(e.message,false);return}S.values={...vals};S.solution={};ks.forEach(k=>{if(!S.givens[k])S.solution[k]=true});renderAll();status(`解けました！ 探索回数 ${steps.toLocaleString()}`,true)}
+function grayAnswer(){const ks=Object.keys(S.gray).sort((a,b)=>{const A=parse(a),B=parse(b);return A[0]-B[0]||A[1]-B[1]});if(!ks.length){$("#grayAnswer").textContent="—";return}const vs=ks.map(k=>S.values[k]||"□"),ok=vs.every(v=>v!=="□");$("#grayAnswer").textContent=vs.join(" + ")+(ok?` = ${vs.map(Number).reduce((a,b)=>a+b,0)}`:"")}
 function status(msg,ok=null){const e=$("#status");e.textContent=msg;e.className="status"+(ok===true?" ok":ok===false?" err":"")}
-function data(){return JSON.stringify({version:1,boards:state.boards,givens:state.givens,gray:state.gray})}
-function load(t){const d=JSON.parse(t);if(!Array.isArray(d.boards))throw Error("盤面データがありません");state.boards=d.boards;state.givens=d.givens||{};state.values={...state.givens};state.gray=d.gray||{};state.solutionKeys={};state.selected=null;renderBoardsList();rebuildBoard();status("保存データを読み込みました。",true)}
-$("#applyTemplate").onclick=()=>{if(Object.keys(state.givens).length&&!confirm("現在の入力を消して適用しますか？"))return;state.boards=templateBoards($("#template").value);state.values={};state.givens={};state.gray={};state.solutionKeys={};state.selected=null;renderBoardsList();rebuildBoard();status("テンプレートを適用しました。")}
-$("#addBoard").onclick=()=>{state.boards.push({name:`盤面${state.boards.length+1}`,row:0,col:0});renderBoardsList()}
-$("#rebuild").onclick=()=>{renderBoardsList();rebuildBoard();status("配置を反映しました。")}
-$("#modeNumber").onclick=()=>{state.mode="number";$("#modeNumber").classList.add("active");$("#modeGray").classList.remove("active")}
-$("#modeGray").onclick=()=>{state.mode="gray";$("#modeGray").classList.add("active");$("#modeNumber").classList.remove("active")}
-$("#clearCell").onclick=()=>enterNumber(0);$("#clearSolution").onclick=()=>{state.values={...state.givens};state.solutionKeys={};rebuildBoard();status("解答部分を消しました。")}
-document.querySelectorAll("#keypad button").forEach(b=>b.onclick=()=>enterNumber(+b.dataset.n))
+function saveAuto(){localStorage.setItem("projectNanpreV22",JSON.stringify(S))}
+function loadSaved(){const t=localStorage.getItem("projectNanpreV22");if(!t){status("保存データがありません。",false);return}Object.assign(S,JSON.parse(t));renderAll();status("保存データを読み込みました。",true)}
+function updatePhotoTransform(){const img=$("#photoImg");img.style.transform=`translate(${photoEdit.x}%,${photoEdit.y}%) scale(${photoEdit.zoom/100}) rotate(${photoEdit.rot}deg)`;$("#zoomOut").textContent=photoEdit.zoom+"%";$("#panXOut").textContent=photoEdit.x;$("#panYOut").textContent=photoEdit.y;$("#rotOut").textContent=photoEdit.rot+"°"}
+function refreshPhotoEditor(){const p=S.photos[boardPhotoKey()];if(p){photoEdit.data=p.original||p.data;photoEdit.zoom=p.zoom||100;photoEdit.x=p.x||0;photoEdit.y=p.y||0;photoEdit.rot=p.rot||0;$("#photoEditor").classList.remove("hidden");$("#photoImg").src=photoEdit.data;$("#zoom").value=photoEdit.zoom;$("#panX").value=photoEdit.x;$("#panY").value=photoEdit.y;$("#rot").value=photoEdit.rot;$("#photoGrid").style.backgroundSize=`${100/cfg().n}% ${100/cfg().n}%`;updatePhotoTransform()}else if(!photoEdit.data){$("#photoEditor").classList.add("hidden")}}
+function rasterizePhoto(cb){const img=$("#photoImg"),box=$("#photoPreview"),n=cfg().n,w=900,h=900,c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d"),iw=img.naturalWidth,ih=img.naturalHeight,base=Math.max(w/iw,h/ih),sc=base*(photoEdit.zoom/100);x.save();x.translate(w/2+photoEdit.x*w/100,h/2+photoEdit.y*h/100);x.rotate(photoEdit.rot*Math.PI/180);x.drawImage(img,-iw*sc/2,-ih*sc/2,iw*sc,ih*sc);x.restore();cb(c.toDataURL("image/jpeg",.88))}
+function showMagnifier(k){const m=membership().get(k)||[],ph=photoForCell(m),mag=$("#magnifier");if(!ph){mag.style.backgroundImage="";mag.textContent="この盤面には写真が設定されていません";return}mag.textContent="";mag.style.backgroundImage=`url("${ph.p.data}")`;mag.style.backgroundSize=`${ph.n*100}% ${ph.n*100}%`;mag.style.backgroundPosition=`${ph.n===1?0:(ph.lc/(ph.n-1))*100}% ${ph.n===1?0:(ph.lr/(ph.n-1))*100}%`}
+$("#photoInput").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{photoEdit.data=r.result;photoEdit.zoom=100;photoEdit.x=0;photoEdit.y=0;photoEdit.rot=0;$("#photoImg").src=r.result;$("#photoEditor").classList.remove("hidden");$("#photoGrid").style.backgroundSize=`${100/cfg().n}% ${100/cfg().n}%`;updatePhotoTransform()};r.readAsDataURL(f)}
+["zoom","panX","panY","rot"].forEach(id=>$("#"+id).oninput=e=>{photoEdit[id==="panX"?"x":id==="panY"?"y":id]=+e.target.value;updatePhotoTransform()})
+$("#applyPhoto").onclick=()=>{if(!photoEdit.data){status("先に写真を選んでください。",false);return}rasterizePhoto(data=>{S.photos[boardPhotoKey()]={data,original:photoEdit.data,zoom:photoEdit.zoom,x:photoEdit.x,y:photoEdit.y,rot:photoEdit.rot};renderAll();saveAuto();status("写真を選択盤面に重ねました。マスを押して数字を入力してください。",true)})}
+$("#removePhoto").onclick=()=>{delete S.photos[boardPhotoKey()];photoEdit.data=null;$("#photoEditor").classList.add("hidden");renderAll();saveAuto();status("写真を外しました。")}
+$("#tabLinked").onclick=()=>setMode("linked");$("#tab12").onclick=()=>setMode("12");$("#tab16").onclick=()=>setMode("16");
+$("#addBoard").onclick=()=>{S.boards.push({id:S.nextBoardId,name:`盤面${S.nextBoardId}`,row:0,col:0});S.selectedBoard=S.boards.length-1;S.nextBoardId++;normalize();renderAll();saveAuto()}
+$("#deleteBoard").onclick=()=>{if(S.boards.length<=1){status("盤面は最低1つ必要です。",false);return}S.boards.splice(S.selectedBoard,1);S.selectedBoard=Math.max(0,S.selectedBoard-1);normalize();renderAll();saveAuto()}
+$("#centerBoards").onclick=()=>{normalize();renderAll()}
+$("#modeNumber").onclick=()=>{S.inputMode="number";$("#modeNumber").classList.add("active");$("#modeGray").classList.remove("active")}
+$("#modeGray").onclick=()=>{S.inputMode="gray";$("#modeGray").classList.add("active");$("#modeNumber").classList.remove("active")}
+$("#clearCell").onclick=()=>enter(null);$("#clearSolution").onclick=()=>{S.values={...S.givens};S.solution={};renderAll();status("解答だけ消しました。")}
 $("#solve").onclick=solvePuzzle;$("#check").onclick=()=>{const v=validate();status(v.msg,v.ok)}
-$("#resetAll").onclick=()=>{if(!confirm("全部リセットしますか？"))return;state.boards=templateBoards("cross4");state.values={};state.givens={};state.gray={};state.solutionKeys={};state.selected=null;renderBoardsList();rebuildBoard();status("リセットしました。")}
-$("#saveLocal").onclick=()=>{localStorage.setItem("projectNanpreData",data());status("この端末に途中保存しました。",true)}
-$("#loadLocal").onclick=()=>{const t=localStorage.getItem("projectNanpreData");if(!t){status("保存データがありません。",false);return}try{load(t)}catch(e){status("読み込み失敗: "+e.message,false)}}
-window.addEventListener("resize",rebuildBoard);
-state.boards=templateBoards("cross4");renderBoardsList();rebuildBoard();
-
-let deferredPrompt=null;
-window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;$("#installCard").style.display="block"});
-$("#installBtn").onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$("#installCard").style.display="none"};
-if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js"));
+$("#save").onclick=()=>{saveAuto();status("途中保存しました。",true)};$("#load").onclick=loadSaved;
+$("#reset").onclick=()=>{if(!confirm("現在の入力をリセットしますか？"))return;S.values={};S.givens={};S.gray={};S.solution={};S.selectedCell=null;S.photos={};if(S.modeType==="linked"){S.boards=[{id:1,name:"盤面1",row:0,col:0}];S.nextBoardId=2;S.selectedBoard=0}renderAll();saveAuto();status("リセットしました。")}
+window.addEventListener("resize",renderWork);renderAll();if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js"));
 </script>
 </body>
 </html>
