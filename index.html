@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ef6fa7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Project NANPRE">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Project NANPRE</title>
+<style>
+:root{
+  --bg:#fff7fb; --card:#fff; --ink:#332b34; --muted:#776d76;
+  --accent:#ef6fa7; --accent2:#ffd8e8; --line:#b9afb9; --thick:#4f4650;
+  --given:#2f2933; --solved:#2664aa; --gray:#dedee6; --bad:#ffe0e0;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Yu Gothic",sans-serif;background:var(--bg);color:var(--ink)}
+header{position:sticky;top:0;z-index:20;background:rgba(255,247,251,.96);backdrop-filter:blur(10px);padding:12px 14px;border-bottom:1px solid #eadde4}
+h1{font-size:20px;margin:0 0 3px}
+.sub{font-size:12px;color:var(--muted)}
+main{max-width:1100px;margin:auto;padding:10px}
+.card{background:var(--card);border-radius:16px;padding:12px;margin-bottom:10px;box-shadow:0 2px 12px rgba(50,30,45,.07)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button,select,input{font:inherit;border:1px solid #d5c8d0;border-radius:10px;background:#fff;color:var(--ink)}
+button{padding:10px 12px;font-weight:750;cursor:pointer}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+button.soft{background:var(--accent2);border-color:#f3b8cf}
+button.danger{background:#fff0f0;color:#a62929}
+button.active{outline:3px solid #f5abc8}
+select,input{padding:9px}
+label{font-size:13px;color:var(--muted)}
+#boardWrap{overflow:auto;-webkit-overflow-scrolling:touch;padding:8px;background:#faf8fa;border-radius:12px;min-height:300px}
+#board{position:relative;margin:auto;touch-action:manipulation}
+.cell{position:absolute;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;user-select:none;-webkit-user-select:none}
+.cell.given{color:var(--given)}
+.cell.solved{color:var(--solved)}
+.cell.gray{background:var(--gray)}
+.cell.selected{box-shadow:inset 0 0 0 3px var(--accent);z-index:5}
+.edgeT{border-top:3px solid var(--thick)!important}.edgeB{border-bottom:3px solid var(--thick)!important}.edgeL{border-left:3px solid var(--thick)!important}.edgeR{border-right:3px solid var(--thick)!important}
+#keypad{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:10px}
+#keypad button{font-size:18px;padding:11px 4px}
+.status{padding:10px;border-radius:10px;background:#f6f3f5;font-size:14px;white-space:pre-wrap}
+.status.ok{background:#e9f8ee;color:#176536}.status.err{background:#fff0f0;color:#922}
+.boardItem{display:grid;grid-template-columns:1fr 78px 78px auto;gap:6px;align-items:end;padding:8px 0;border-bottom:1px solid #eee}
+.small{font-size:12px;color:var(--muted)}
+details summary{font-weight:800;cursor:pointer}
+.pill{display:inline-block;padding:5px 8px;border-radius:999px;background:#f2edf0;font-size:12px}
+#grayAnswer{font-size:20px;font-weight:900;margin-top:5px}
+.install{display:none;background:#fff1f6;border:1px solid #f4bfd3}
+@media(max-width:620px){
+ main{padding:8px}.card{border-radius:13px;padding:10px}
+ .boardItem{grid-template-columns:1fr 68px 68px}.boardItem button{grid-column:1/-1}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Project NANPRE</h1>
+  <div class="sub">4連・7連・12連・変則配置に対応する、しほ専用ナンプレソルバー</div>
+</header>
+<main>
+<section id="installCard" class="card install">
+  <b>ホーム画面に追加できます</b>
+  <div class="small" style="margin:4px 0 8px">Safariの共有ボタン →「ホーム画面に追加」でアプリ風に使えます。</div>
+  <button id="installBtn" class="primary">インストール</button>
+</section>
+
+<section class="card">
+  <div class="row">
+    <label>テンプレート
+      <select id="template">
+        <option value="single">通常9×9</option>
+        <option value="cross4">4連・十字型</option>
+        <option value="chain4">4連・横連結</option>
+        <option value="chain7">7連・横連結</option>
+        <option value="chain12">12連・横連結</option>
+        <option value="blank">空のカスタム</option>
+      </select>
+    </label>
+    <button class="soft" id="applyTemplate">適用</button>
+    <button id="saveLocal">途中保存</button>
+    <button id="loadLocal">保存を読込</button>
+  </div>
+</section>
+
+<section class="card">
+  <details>
+    <summary>盤面の形を調整</summary>
+    <div class="small" style="margin:8px 0">各9×9盤面の左上位置を指定します。重なったマスは自動共有されます。行・列は0から。</div>
+    <div id="boardsList"></div>
+    <div class="row" style="margin-top:8px">
+      <button id="addBoard">＋ 盤面を追加</button>
+      <button id="rebuild">配置を反映</button>
+    </div>
+  </details>
+</section>
+
+<section class="card">
+  <div class="row">
+    <button id="modeNumber" class="active">数字入力</button>
+    <button id="modeGray">灰色マス指定</button>
+    <button id="clearCell">選択マスを消す</button>
+    <button id="clearSolution">解答だけ消す</button>
+  </div>
+  <div id="boardWrap"><div id="board"></div></div>
+  <div id="keypad">
+    <button data-n="1">1</button><button data-n="2">2</button><button data-n="3">3</button><button data-n="4">4</button><button data-n="5">5</button>
+    <button data-n="6">6</button><button data-n="7">7</button><button data-n="8">8</button><button data-n="9">9</button><button data-n="0">消す</button>
+  </div>
+</section>
+
+<section class="card">
+  <div class="row">
+    <button class="primary" id="solve">解く</button>
+    <button id="check">入力チェック</button>
+    <button class="danger" id="resetAll">全部リセット</button>
+  </div>
+  <div id="status" class="status" style="margin-top:10px">盤面を選び、印刷されている数字を入力してください。</div>
+  <div style="margin-top:10px">
+    <span class="pill">灰色マスの答え</span>
+    <div id="grayAnswer">—</div>
+  </div>
+</section>
+</main>
+
+<script>
+"use strict";
+const state={boards:[],values:{},givens:{},gray:{},selected:null,mode:"number",solutionKeys:{}};
+const $=s=>document.querySelector(s),keyOf=(r,c)=>`${r},${c}`,parseKey=k=>k.split(",").map(Number);
+function templateBoards(name){const a=[],add=(n,r,c)=>a.push({name:n,row:r,col:c});
+if(name==="single")add("盤面1",0,0);
+if(name==="cross4"){add("上",0,6);add("左",6,0);add("右",6,12);add("下",12,6);}
+if(name==="chain4")for(let i=0;i<4;i++)add(`盤面${i+1}`,0,i*6);
+if(name==="chain7")for(let i=0;i<7;i++)add(`盤面${i+1}`,0,i*6);
+if(name==="chain12")for(let i=0;i<12;i++)add(`盤面${i+1}`,0,i*6);
+return a}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function renderBoardsList(){const box=$("#boardsList");box.innerHTML="";
+state.boards.forEach((b,i)=>{const d=document.createElement("div");d.className="boardItem";d.innerHTML=`<label>名前<input value="${esc(b.name)}" data-i="${i}" data-f="name"></label><label>行<input type="number" min="0" value="${b.row}" data-i="${i}" data-f="row"></label><label>列<input type="number" min="0" value="${b.col}" data-i="${i}" data-f="col"></label><button class="danger" data-remove="${i}">削除</button>`;box.appendChild(d)});
+box.querySelectorAll("input").forEach(x=>x.onchange=e=>{const i=+e.target.dataset.i,f=e.target.dataset.f;state.boards[i][f]=f==="name"?e.target.value:Math.max(0,+e.target.value||0)});
+box.querySelectorAll("[data-remove]").forEach(x=>x.onclick=e=>{state.boards.splice(+e.target.dataset.remove,1);renderBoardsList();rebuildBoard()})}
+function membership(){const m=new Map();state.boards.forEach((b,bi)=>{for(let r=0;r<9;r++)for(let c=0;c<9;c++){const k=keyOf(b.row+r,b.col+c);if(!m.has(k))m.set(k,[]);m.get(k).push({bi,lr:r,lc:c})}});return m}
+function clean(){const m=membership();[state.values,state.givens,state.gray,state.solutionKeys].forEach(o=>Object.keys(o).forEach(k=>{if(!m.has(k))delete o[k]}));if(state.selected&&!m.has(state.selected))state.selected=null}
+function rebuildBoard(){clean();const map=membership(),board=$("#board");board.innerHTML="";if(!map.size){board.style.width="300px";board.style.height="240px";board.innerHTML="<div style='padding:30px;text-align:center;color:#777'>盤面を追加してください</div>";return}
+let maxR=0,maxC=0;for(const k of map.keys()){const [r,c]=parseKey(k);maxR=Math.max(maxR,r);maxC=Math.max(maxC,c)}
+const wrapW=$("#boardWrap").clientWidth-16,cols=maxC+1,rows=maxR+1,cell=Math.max(24,Math.min(46,Math.floor(wrapW/Math.min(cols,12))));
+board.style.width=cols*cell+"px";board.style.height=rows*cell+"px";
+for(const [k,mem] of map.entries()){const [r,c]=parseKey(k),el=document.createElement("div");el.className="cell";el.style.left=c*cell+"px";el.style.top=r*cell+"px";el.style.width=cell+"px";el.style.height=cell+"px";el.style.fontSize=Math.max(15,Math.floor(cell*.58))+"px";
+let T=false,B=false,L=false,R=false;mem.forEach(x=>{if(x.lr%3===0)T=true;if(x.lr%3===2)B=true;if(x.lc%3===0)L=true;if(x.lc%3===2)R=true});
+if(T)el.classList.add("edgeT");if(B)el.classList.add("edgeB");if(L)el.classList.add("edgeL");if(R)el.classList.add("edgeR");
+if(state.gray[k])el.classList.add("gray");if(state.selected===k)el.classList.add("selected");if(state.values[k]){el.textContent=state.values[k];el.classList.add(state.solutionKeys[k]?"solved":"given")}
+el.onclick=()=>selectCell(k);board.appendChild(el)}refreshGrayAnswer()}
+function selectCell(k){if(state.mode==="gray"){state.gray[k]=!state.gray[k];if(!state.gray[k])delete state.gray[k];rebuildBoard();return}state.selected=k;rebuildBoard()}
+function enterNumber(n){if(!state.selected)return;if(n===0){delete state.values[state.selected];delete state.givens[state.selected];delete state.solutionKeys[state.selected]}else{state.values[state.selected]=n;state.givens[state.selected]=n;delete state.solutionKeys[state.selected]}rebuildBoard()}
+function constraints(){const map=membership(),units=[];state.boards.forEach(b=>{for(let r=0;r<9;r++)units.push([...Array(9)].map((_,c)=>keyOf(b.row+r,b.col+c)));for(let c=0;c<9;c++)units.push([...Array(9)].map((_,r)=>keyOf(b.row+r,b.col+c)));for(let br=0;br<3;br++)for(let bc=0;bc<3;bc++){const u=[];for(let r=0;r<3;r++)for(let c=0;c<3;c++)u.push(keyOf(b.row+br*3+r,b.col+bc*3+c));units.push(u)}});
+const peers={};for(const k of map.keys())peers[k]=new Set();units.forEach(u=>u.forEach(k=>u.forEach(j=>{if(j!==k)peers[k].add(j)})));return{map,units,peers}}
+function validate(values=state.givens){const{units}=constraints();for(const u of units){const seen={};for(const k of u){const v=values[k];if(v){if(seen[v])return{ok:false,msg:`同じ行・列・3×3内に「${v}」が重複しています。`};seen[v]=true}}}return{ok:true,msg:"入力矛盾は見つかりませんでした。"}}
+function solvePuzzle(){const valid=validate();if(!valid.ok){status(valid.msg,false);return}const{map,peers}=constraints();if(!map.size){status("盤面がありません。",false);return}
+const vals={};for(const k of map.keys())vals[k]=state.givens[k]||0;const keys=[...map.keys()],cands=k=>{const used=new Set();peers[k].forEach(p=>{if(vals[p])used.add(vals[p])});const a=[];for(let n=1;n<=9;n++)if(!used.has(n))a.push(n);return a};let steps=0;
+function dfs(){steps++;let best=null,bc=null;for(const k of keys)if(!vals[k]){const c=cands(k);if(!c.length)return false;if(!best||c.length<bc.length){best=k;bc=c;if(c.length===1)break}}if(!best)return true;for(const n of bc){vals[best]=n;if(dfs())return true;vals[best]=0}return false}
+if(!dfs()){status("解が見つかりません。数字か盤面配置を確認してください。",false);return}
+state.values={...vals};state.solutionKeys={};for(const k of keys)if(!state.givens[k])state.solutionKeys[k]=true;rebuildBoard();status(`解けました！ 探索回数: ${steps.toLocaleString()}`,true)}
+function refreshGrayAnswer(){const ks=Object.keys(state.gray).sort((a,b)=>{const A=parseKey(a),B=parseKey(b);return A[0]-B[0]||A[1]-B[1]});if(!ks.length){$("#grayAnswer").textContent="—";return}const nums=ks.map(k=>state.values[k]||"□"),complete=nums.every(x=>typeof x==="number");$("#grayAnswer").textContent=nums.join(" + ")+(complete?` = ${nums.reduce((a,b)=>a+b,0)}`:"")}
+function status(msg,ok=null){const e=$("#status");e.textContent=msg;e.className="status"+(ok===true?" ok":ok===false?" err":"")}
+function data(){return JSON.stringify({version:1,boards:state.boards,givens:state.givens,gray:state.gray})}
+function load(t){const d=JSON.parse(t);if(!Array.isArray(d.boards))throw Error("盤面データがありません");state.boards=d.boards;state.givens=d.givens||{};state.values={...state.givens};state.gray=d.gray||{};state.solutionKeys={};state.selected=null;renderBoardsList();rebuildBoard();status("保存データを読み込みました。",true)}
+$("#applyTemplate").onclick=()=>{if(Object.keys(state.givens).length&&!confirm("現在の入力を消して適用しますか？"))return;state.boards=templateBoards($("#template").value);state.values={};state.givens={};state.gray={};state.solutionKeys={};state.selected=null;renderBoardsList();rebuildBoard();status("テンプレートを適用しました。")}
+$("#addBoard").onclick=()=>{state.boards.push({name:`盤面${state.boards.length+1}`,row:0,col:0});renderBoardsList()}
+$("#rebuild").onclick=()=>{renderBoardsList();rebuildBoard();status("配置を反映しました。")}
+$("#modeNumber").onclick=()=>{state.mode="number";$("#modeNumber").classList.add("active");$("#modeGray").classList.remove("active")}
+$("#modeGray").onclick=()=>{state.mode="gray";$("#modeGray").classList.add("active");$("#modeNumber").classList.remove("active")}
+$("#clearCell").onclick=()=>enterNumber(0);$("#clearSolution").onclick=()=>{state.values={...state.givens};state.solutionKeys={};rebuildBoard();status("解答部分を消しました。")}
+document.querySelectorAll("#keypad button").forEach(b=>b.onclick=()=>enterNumber(+b.dataset.n))
+$("#solve").onclick=solvePuzzle;$("#check").onclick=()=>{const v=validate();status(v.msg,v.ok)}
+$("#resetAll").onclick=()=>{if(!confirm("全部リセットしますか？"))return;state.boards=templateBoards("cross4");state.values={};state.givens={};state.gray={};state.solutionKeys={};state.selected=null;renderBoardsList();rebuildBoard();status("リセットしました。")}
+$("#saveLocal").onclick=()=>{localStorage.setItem("projectNanpreData",data());status("この端末に途中保存しました。",true)}
+$("#loadLocal").onclick=()=>{const t=localStorage.getItem("projectNanpreData");if(!t){status("保存データがありません。",false);return}try{load(t)}catch(e){status("読み込み失敗: "+e.message,false)}}
+window.addEventListener("resize",rebuildBoard);
+state.boards=templateBoards("cross4");renderBoardsList();rebuildBoard();
+
+let deferredPrompt=null;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;$("#installCard").style.display="block"});
+$("#installBtn").onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$("#installCard").style.display="none"};
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js"));
+</script>
+</body>
+</html>

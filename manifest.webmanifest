@@ -1,0 +1,22 @@
+{
+  "name": "Project NANPRE",
+  "short_name": "NANPRE",
+  "description": "4連・7連・12連・変則配置に対応する連結ナンプレソルバー",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fff7fb",
+  "theme_color": "#ef6fa7",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
